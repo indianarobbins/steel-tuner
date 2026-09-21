@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support — Steel Tuner</title>
+<meta name="description" content="Help for Steel Tuner: why the app disagrees with a chromatic tuner, what a copedent is, which strings cannot be solved, and how to get in touch.">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="_page.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d0d10'/><g stroke='%23e8a33d' stroke-width='1.6' stroke-linecap='round'><path d='M7 11h18M7 16h18M7 21h18'/></g><circle cx='16' cy='16' r='3.2' fill='%234fd1a5'/></svg>">
+</head>
+<body>
+<header><div class="wrap bar">
+  <a class="mark" href="/"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#16161d"/><g stroke="#e8a33d" stroke-width="1.6" stroke-linecap="round"><path d="M7 11h18M7 16h18M7 21h18"/></g><circle cx="16" cy="16" r="3.2" fill="#4fd1a5"/></svg> Steel Tuner</a>
+  <nav><a href="/">Home</a><a href="/privacy">Privacy</a></nav>
+</div></header>
+
+<div class="wrap">
+<h1>Support</h1>
+<span class="eff">Steel Tuner for iOS</span>
+
+<div class="card">
+<p><strong>Email gets a real answer.</strong><br>
+<a href="mailto:support@steeltuner.com">support@steeltuner.com</a> — problems,
+questions, anything that looks wrong.<br>
+<a href="mailto:charts@steeltuner.com">charts@steeltuner.com</a> — if you have a
+chart with real measured cents on it. A photo of a marked-up page is plenty, and
+it is the single most useful thing anyone can send.</p>
+</div>
+
+<h2>My chromatic tuner says 0¢ and Steel Tuner doesn't. Which is wrong?</h2>
+<p>Neither. A chromatic tuner aims every string at equal temperament, where a
+major third sits about <code>13.7¢</code> sharp of a pure one. Steel Tuner aims
+at the interval the string is actually voicing in the chord your pedals are
+making. Tuned to equal temperament that third beats roughly four and a half
+times a second against the root; tuned pure, the beating stops. That difference
+is the reason the app exists, and it is what your ear is reacting to when a
+chord sounds restless.</p>
+
+<h2>Why does the app say strings 1, 4 and 7 cannot be solved?</h2>
+<p>Because on an E9 neck they genuinely cannot. Those strings are asked to be
+different intervals in different chords, and the two targets sit a syntonic
+comma apart — about <code>21.5¢</code> — pulling in opposite directions from the
+same open string. Buddy Emmons' own published chart tunes the two F♯ strings
+<code>+4¢</code> and <code>−15¢</code> for exactly this reason. Steel Tuner
+tells you which strings are stuck rather than hiding it behind a single number,
+shows what each compromise costs in beats per second, and prints the stop-screw
+adjustment for the seven strings that <em>are</em> solvable.</p>
+
+<h2>What is a copedent, and why do I need to set one up?</h2>
+<p>Your copedent is what each pedal and knee lever does to each string. No two
+guitars are identical, and four charts from one forum thread will disagree three
+different ways. Steel Tuner ships with reference copedents you can start from,
+and every string, pedal, lever and half stop is editable — including mid-tune,
+from the tuner screen, with the bar still in your hand.</p>
+
+<h2>Can I share my setup with someone else?</h2>
+<p>Yes. A copedent exports as a single file that is readable as a chart and
+loadable as data, so you can mail or message it to another player and they can
+open it straight into the app. It is plain text on purpose, so a mail gateway
+that mangles attachments leaves it alone.</p>
+
+<h2>The tuner isn't hearing anything</h2>
+<ul>
+<li>Check <strong>Settings › Privacy &amp; Security › Microphone</strong> and make
+sure Steel Tuner is allowed.</li>
+<li>If another app is using the microphone, iOS may hand it over only when that
+app releases it. The app tells you when the system has paused the mic and picks
+it back up on its own.</li>
+<li>Low strings need a moment. The app deliberately trades latency for accuracy
+down there rather than guessing at an octave.</li>
+</ul>
+
+<h2>Which tunings are supported?</h2>
+<p>E9, C6, the U-12 universal neck, and three lap steel tunings, with pedals,
+knee levers and half stops throughout. Cabinet drop is handled as a property of
+your guitar, kept separate from temperament, so you are never chasing two
+variables at once.</p>
+
+<h2>Reporting something that looks wrong</h2>
+<p>If a target looks wrong against a chart you trust, that is worth an email.
+Say which neck and copedent you were on, which pedals or levers were down, the
+string, and what the app showed against what you expected. Every real bug found
+so far came from somebody playing an instrument, not from a test.</p>
+</div>
+
+<footer><div class="wrap">
+Steel Tuner · <a href="/">steeltuner.com</a> ·
+<a href="/privacy">Privacy Policy</a>
+</div></footer>
+</body>
+</html>
