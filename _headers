@@ -1,13 +1,25 @@
-# Cloudflare Pages' native equivalent of vercel.json's headers block.
-# Both are kept so the repo deploys unchanged to either host.
+# Cloudflare Pages/Workers native headers. GitHub Pages ignores this file
+# entirely - one of the reasons the Worker is the live host.
 
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
+  # Six months, no preload. Preload is a one-way door - browsers ship the list
+  # baked in and removal takes months - so it is not worth it for a site whose
+  # host has already moved once today.
+  Strict-Transport-Security: max-age=15552000
+  # The page is one self-contained file: inline <style> and one inline
+  # <script>, no third-party anything. 'unsafe-inline' is unavoidable for those
+  # two without hashing a script that changes every edit, but everything else
+  # is locked to same-origin so an injected external script has nowhere to call.
+  # img-src allows data: for the inline SVG favicon.
+  # static.cloudflareinsights.com is Cloudflare's own Web Analytics beacon,
+  # which the proxy injects automatically. It is cookieless and does not track
+  # across sites. Turn it off in the dashboard rather than here if unwanted.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; font-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'
 
-# Generated from the app's SteelExport target. Never cache it past a reload,
-# or the page could outlive a regenerated copy and start disagreeing with the
-# tuner it is advertising.
+# Generated from the app's SteelExport target. Never cache past a reload, or
+# the page could outlive a regenerated copy and disagree with the tuner.
 /data.json
   Cache-Control: public, max-age=0, must-revalidate
