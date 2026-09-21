@@ -1,0 +1,13 @@
+# Cloudflare Pages' native equivalent of vercel.json's headers block.
+# Both are kept so the repo deploys unchanged to either host.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+
+# Generated from the app's SteelExport target. Never cache it past a reload,
+# or the page could outlive a regenerated copy and start disagreeing with the
+# tuner it is advertising.
+/data.json
+  Cache-Control: public, max-age=0, must-revalidate
