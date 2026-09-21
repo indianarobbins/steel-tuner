@@ -105,7 +105,7 @@ nav a:hover{color:var(--text);text-decoration:none}
 .trace{width:100%;height:96px;margin-top:14px;display:block}
 .meter-foot{
   display:flex;justify-content:space-between;font:400 11px/1 var(--mono);
-  color:var(--dim);margin-top:10px;
+  color:var(--dim);margin-top:26px;
 }
 
 /* ---------- generic panel ---------- */
@@ -202,6 +202,68 @@ footer .bar{align-items:flex-start;flex-wrap:wrap;gap:24px}
   *{animation-duration:.001ms!important;transition-duration:.001ms!important}
   html{scroll-behavior:auto}
 }
+
+/* ---------- animated hero trace ---------- */
+.trace-wrap{position:relative;margin-top:14px}
+canvas.trace{width:100%;height:96px;display:block}
+/* Bottom-left: the attack spike lands top-right, and the oldest history
+   underneath here has already faded out. */
+.pluck{
+  position:absolute;left:0;bottom:-2px;
+  font:600 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);background:color-mix(in srgb,var(--panel) 80%,transparent);
+  border:1px solid var(--line-soft);border-radius:999px;padding:5px 9px;
+  cursor:pointer;transition:color .16s,border-color .16s;
+}
+.pluck:hover{color:var(--brass);border-color:var(--brass-dim)}
+
+/* ---------- beats ---------- */
+.beats{background:#0a0a0e;border-block:1px solid var(--line-soft)}
+.beats-stage{
+  margin-top:34px;background:var(--panel);border:1px solid var(--line);
+  border-radius:16px;padding:clamp(18px,3vw,28px);
+  box-shadow:0 30px 70px -30px #000;
+}
+canvas.wave{width:100%;height:190px;display:block;border-radius:10px}
+@media(max-width:680px){canvas.wave{height:150px}}
+.beats-read{
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  margin-bottom:16px;
+}
+.beats-rate{font:700 38px/1 var(--mono);letter-spacing:-.03em;color:var(--brass);font-variant-numeric:tabular-nums}
+.beats-rate.clean{color:var(--tuned)}
+.beats-unit{font:500 13px/1 var(--mono);color:var(--dim)}
+.beats-verdict{margin-left:auto;font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.slider-row{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap}
+.slider-row label{font:600 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+input[type=range].cents{
+  flex:1;min-width:190px;-webkit-appearance:none;appearance:none;
+  height:3px;border-radius:2px;background:var(--line);outline:none;
+}
+input[type=range].cents::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:19px;height:19px;border-radius:50%;
+  background:var(--brass);cursor:grab;border:3px solid var(--panel);
+  box-shadow:0 0 0 1px var(--brass-dim);
+}
+input[type=range].cents::-moz-range-thumb{
+  width:19px;height:19px;border-radius:50%;background:var(--brass);
+  cursor:grab;border:3px solid var(--panel);box-shadow:0 0 0 1px var(--brass-dim);
+}
+.presets{display:flex;gap:8px;flex-wrap:wrap}
+.preset{
+  border:1px solid var(--line);background:var(--panel-2);color:var(--muted);
+  border-radius:999px;padding:7px 14px;cursor:pointer;font:inherit;font-size:13px;
+  transition:border-color .16s,color .16s;
+}
+.preset:hover{color:var(--text);border-color:var(--brass-dim)}
+.preset[aria-pressed=true]{border-color:var(--brass);color:var(--brass)}
+
+/* Motion is the argument here, so the reduced-motion fallback is a still
+   frame that still shows the beating rather than an empty box. */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .btn:hover{transform:none}
+}
 </style>
 </head>
 <body>
@@ -221,6 +283,7 @@ footer .bar{align-items:flex-start;flex-wrap:wrap;gap:24px}
     <nav>
       <a href="#demo">The demo</a>
       <a href="#fsharp">The F♯ problem</a>
+      <a href="#beats">Beats</a>
       <a href="#what">What it does</a>
       <a href="#necks">Instruments</a>
     </nav>
@@ -257,23 +320,10 @@ footer .bar{align-items:flex-start;flex-wrap:wrap;gap:24px}
         <span class="meter-sub">string 3<br>415.30 Hz</span>
         <span class="meter-cents" id="heroCents">−13.7¢</span>
       </div>
-      <svg class="trace" viewBox="0 0 320 96" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="fade" x1="0" x2="1">
-            <stop offset="0" stop-color="#e8a33d" stop-opacity="0"/>
-            <stop offset=".28" stop-color="#e8a33d" stop-opacity=".85"/>
-            <stop offset="1" stop-color="#4fd1a5" stop-opacity="1"/>
-          </linearGradient>
-        </defs>
-        <line x1="0" y1="48" x2="320" y2="48" stroke="#24242e" stroke-width="1"/>
-        <line x1="0" y1="24" x2="320" y2="24" stroke="#1b1b23" stroke-width="1" stroke-dasharray="3 5"/>
-        <line x1="0" y1="72" x2="320" y2="72" stroke="#1b1b23" stroke-width="1" stroke-dasharray="3 5"/>
-        <!-- attack arrives sharp and sweeps down into the target -->
-        <path d="M4 88 C 26 8, 44 14, 62 30 S 96 56, 128 47 S 190 49, 250 48 L 316 48"
-              fill="none" stroke="url(#fade)" stroke-width="2.4"
-              stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="316" cy="48" r="3.4" fill="#4fd1a5"/>
-      </svg>
+      <div class="trace-wrap">
+        <canvas class="trace" id="heroTrace" width="640" height="192"></canvas>
+        <button class="pluck" id="heroPluck" type="button">pluck</button>
+      </div>
       <div class="meter-foot"><span>attack</span><span>2.5 s of pitch history</span><span>settled</span></div>
     </div>
   </div>
@@ -363,6 +413,53 @@ footer .bar{align-items:flex-start;flex-wrap:wrap;gap:24px}
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ============ BEATS ============ -->
+<section class="beats" id="beats">
+  <div class="wrap">
+    <span class="eyebrow">Why cents are the wrong unit</span>
+    <h2>You don't hear cents.<br>You hear this.</h2>
+    <p class="lede" style="margin-top:20px">
+      Play an A and the C♯ above it. Both notes carry a harmonic near
+      <span class="num">550&nbsp;Hz</span> — the 5th of the A, the 4th of the C♯.
+      When those two land on the same frequency the chord locks. When they miss,
+      they beat, and the whole chord wobbles at the rate of the miss.
+    </p>
+
+    <div class="beats-stage">
+      <div class="beats-read">
+        <span class="beats-rate" id="beatRate">4.4</span>
+        <span class="beats-unit">beats / second</span>
+        <span class="beats-verdict" id="beatVerdict">equal temperament</span>
+      </div>
+
+      <canvas class="wave" id="beatWave" width="1120" height="380"></canvas>
+
+      <div class="slider-row">
+        <label for="centsRange">Third</label>
+        <input type="range" class="cents" id="centsRange"
+               min="-25" max="25" step="0.1" value="13.7"
+               aria-label="Cents offset of the major third from just intonation">
+        <span class="num" id="centsRead" style="color:var(--brass);min-width:7ch">+13.7¢</span>
+      </div>
+
+      <div class="presets" style="margin-top:16px">
+        <button class="preset" type="button" data-c="13.686">Equal temperament</button>
+        <button class="preset" type="button" data-c="0" aria-pressed="false">Just — 5:4</button>
+        <button class="preset" type="button" data-c="-6">Emmons' compromise</button>
+      </div>
+    </div>
+
+    <p style="color:var(--muted);margin-top:26px;max-width:62ch">
+      Equal temperament puts that third <b class="num">13.7¢</b> sharp, which is
+      <b class="num">4.4</b> beats a second — fast enough to sound restless on a
+      held chord. Drag it to zero and the envelope goes flat: the beating stops,
+      because the two harmonics are now the same frequency. That is what a pedal
+      steel player is listening for, and it is why Steel aims at ratios rather
+      than at <span class="num">0.0¢</span>.
+    </p>
   </div>
 </section>
 
@@ -637,6 +734,276 @@ Open strings
     });
   }
   render();
+})();
+</script>
+
+<script>
+/* ============================================================
+   Two animations, both arguing the same point as the copy.
+
+   1. The hero trace: a plucked string arriving sharp and settling onto its
+      target, because attack and decay are what you actually watch while
+      tuning.
+   2. The beats canvas: the reason cents are the wrong unit. The beat rate is
+      computed, not drawn by eye - see beatsPerSecond().
+   ============================================================ */
+(() => {
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Canvas sized to its own box, times the device pixel ratio, so lines stay
+  // crisp and nothing stretches when the column is fluid.
+  function fit(canvas) {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const r = canvas.getBoundingClientRect();
+    if (!r.width) return null;
+    canvas.width = Math.round(r.width * dpr);
+    canvas.height = Math.round(r.height * dpr);
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w: r.width, h: r.height };
+  }
+
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const BRASS = css('--brass') || '#e8a33d';
+  const TUNED = css('--tuned') || '#4fd1a5';
+  const LINE  = css('--line')  || '#24242e';
+  const SOFT  = css('--line-soft') || '#1b1b23';
+  const DIM   = css('--dim')   || '#5f5f72';
+
+  /* ---------------- 1. hero trace ---------------- */
+  const traceEl = document.getElementById('heroTrace');
+  const centsEl = document.getElementById('heroCents');
+  const pluckBtn = document.getElementById('heroPluck');
+
+  if (traceEl) {
+    const TARGET = -13.686;   // pure major 3rd, string 3 of an E9 neck
+    const SPAN = 30;          // cents visible above and below the target
+    const WINDOW = 2.5;       // seconds of history, matching the caption
+    const HZ = 60;
+    const N = Math.round(WINDOW * HZ);
+
+    // history[i] = {c: cents, a: amplitude}. Pre-filled with silence.
+    const history = Array.from({ length: N }, () => ({ c: TARGET, a: 0 }));
+
+    let cents = TARGET, vel = 0, amp = 0, sinceQuiet = 0;
+
+    function pluck() {
+      cents = TARGET + 17 + Math.random() * 7;  // strings arrive sharp
+      vel = 0;
+      amp = 1;
+      sinceQuiet = 0;
+    }
+
+    function step(dt) {
+      // A spring pulling the pitch onto its target, damped hard enough to
+      // overshoot once rather than ring. Not a physical model of a string,
+      // just the shape you see on the meter.
+      const k = 11, damp = 5.2;
+      vel += (TARGET - cents) * k * dt;
+      vel -= vel * damp * dt;
+      cents += vel * dt;
+      if (amp > 0.004) cents += (Math.random() - 0.5) * 0.5 * amp;
+
+      amp *= Math.exp(-dt * 0.85);           // decay
+      if (amp < 0.05) {
+        sinceQuiet += dt;
+        if (sinceQuiet > 1.1 && !still) pluck();
+      }
+
+      history.push({ c: cents, a: amp });
+      if (history.length > N) history.shift();
+    }
+
+    function draw(g) {
+      const { ctx, w, h } = g;
+      const mid = h / 2;
+      const y = c => mid - ((c - TARGET) / SPAN) * (h / 2 - 6);
+
+      ctx.clearRect(0, 0, w, h);
+
+      // guides: the target, and +/-10 cents either side of it
+      ctx.strokeStyle = SOFT; ctx.lineWidth = 1; ctx.setLineDash([3, 5]);
+      [TARGET + 10, TARGET - 10].forEach(c => {
+        ctx.beginPath(); ctx.moveTo(0, y(c)); ctx.lineTo(w, y(c)); ctx.stroke();
+      });
+      ctx.setLineDash([]);
+      ctx.strokeStyle = LINE;
+      ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke();
+
+      // The trace, drawn segment by segment so colour can track how far off
+      // the pitch was at that moment and opacity can fade the older history.
+      ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      for (let i = 1; i < history.length; i++) {
+        const p0 = history[i - 1], p1 = history[i];
+        if (p0.a < 0.02 && p1.a < 0.02) continue;
+        const x0 = ((i - 1) / (N - 1)) * w, x1 = (i / (N - 1)) * w;
+        const off = Math.abs(p1.c - TARGET);
+        const locked = off < 1.5;
+        ctx.strokeStyle = locked ? TUNED : BRASS;
+        ctx.globalAlpha = Math.min(1, (i / N) * 1.15) * Math.min(1, p1.a * 2.2 + 0.25);
+        ctx.beginPath(); ctx.moveTo(x0, y(p0.c)); ctx.lineTo(x1, y(p1.c)); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // head
+      const last = history[history.length - 1];
+      if (last.a > 0.02) {
+        const locked = Math.abs(last.c - TARGET) < 1.5;
+        ctx.fillStyle = locked ? TUNED : BRASS;
+        ctx.beginPath(); ctx.arc(w - 2, y(last.c), 3.4, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    let geom = null, last = performance.now(), acc = 0;
+    function frame(now) {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      geom = geom || fit(traceEl);
+      if (geom) {
+        acc += dt;
+        while (acc > 1 / HZ) { step(1 / HZ); acc -= 1 / HZ; }
+        draw(geom);
+        if (centsEl) {
+          const v = history[history.length - 1].c;
+          centsEl.textContent = (v < 0 ? '−' : '+') + Math.abs(v).toFixed(1) + '¢';
+          centsEl.style.color = Math.abs(v - TARGET) < 1.5 ? TUNED : BRASS;
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    addEventListener('resize', () => { geom = null; });
+    pluckBtn && pluckBtn.addEventListener('click', pluck);
+
+    if (still) {
+      // One settled note rather than a blank panel.
+      for (let i = 0; i < N * 2; i++) step(1 / HZ);
+      pluck();
+      for (let i = 0; i < N; i++) step(1 / HZ);
+      geom = fit(traceEl);
+      if (geom) draw(geom);
+    } else {
+      pluck();
+      requestAnimationFrame(frame);
+    }
+  }
+
+  /* ---------------- 2. beats ---------------- */
+  const waveEl = document.getElementById('beatWave');
+  const rangeEl = document.getElementById('centsRange');
+
+  if (waveEl && rangeEl) {
+    const ROOT = 110;               // A2
+    const COINCIDENT = ROOT * 5;    // 550 Hz: the root's 5th harmonic,
+                                    // and the just third's 4th.
+    const VIEW = 2;                 // seconds of signal on screen
+    const CARRIER = 11;             // visual cycles per second - the real
+                                    // 550 Hz cannot be drawn, but the beat
+                                    // envelope below is the true rate.
+
+    // The third sits `c` cents from just. Its 4th harmonic lands at
+    // 550 * 2^(c/1200); the beat rate is how far that is from 550.
+    const beatsPerSecond = c => Math.abs(COINCIDENT * (Math.pow(2, c / 1200) - 1));
+
+    const rateEl = document.getElementById('beatRate');
+    const verdictEl = document.getElementById('beatVerdict');
+    const readEl = document.getElementById('centsRead');
+    const presets = [...document.querySelectorAll('.preset')];
+
+    let cents = parseFloat(rangeEl.value);
+    let t0 = performance.now();
+
+    function label() {
+      const b = beatsPerSecond(cents);
+      const clean = b < 0.15;
+      if (rateEl) {
+        rateEl.textContent = clean ? '0.0' : b.toFixed(1);
+        rateEl.classList.toggle('clean', clean);
+      }
+      if (verdictEl) {
+        verdictEl.textContent = clean ? 'locked — no beating'
+          : Math.abs(cents - 13.686) < 0.4 ? 'equal temperament'
+          : cents > 0 ? 'third is sharp' : 'third is flat';
+      }
+      if (readEl) {
+        readEl.textContent = (cents < 0 ? '−' : '+') + Math.abs(cents).toFixed(1) + '¢';
+        readEl.style.color = clean ? TUNED : BRASS;
+      }
+      presets.forEach(p =>
+        p.setAttribute('aria-pressed', Math.abs(parseFloat(p.dataset.c) - cents) < 0.4));
+    }
+
+    function draw(g, t) {
+      const { ctx, w, h } = g;
+      const mid = h / 2;
+      const beat = beatsPerSecond(cents);
+      const clean = beat < 0.15;
+      const amp = h * 0.32;
+
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.strokeStyle = SOFT; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke();
+
+      // Envelope of the sum of two equal sines: 2*cos(pi*beat*t). Drawn first,
+      // dim, because it is the thing the whole section is about.
+      ctx.strokeStyle = clean ? TUNED : BRASS;
+      ctx.globalAlpha = 0.3;
+      ctx.lineWidth = 1.5;
+      for (const sign of [1, -1]) {
+        ctx.beginPath();
+        for (let px = 0; px <= w; px++) {
+          const tt = t + (px / w) * VIEW;
+          const e = Math.abs(Math.cos(Math.PI * beat * tt));
+          const y = mid - sign * e * amp;
+          px ? ctx.lineTo(px, y) : ctx.moveTo(px, y);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // The summed waveform. The carrier is slowed for legibility; the
+      // envelope it sits inside is at the true beat rate.
+      ctx.strokeStyle = clean ? TUNED : BRASS;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let px = 0; px <= w; px++) {
+        const tt = t + (px / w) * VIEW;
+        const a = Math.sin(2 * Math.PI * CARRIER * tt);
+        const b = Math.sin(2 * Math.PI * (CARRIER + beat) * tt);
+        const y = mid - ((a + b) / 2) * amp;
+        px ? ctx.lineTo(px, y) : ctx.moveTo(px, y);
+      }
+      ctx.stroke();
+
+      ctx.font = '11px ui-monospace, SF Mono, Menlo, monospace';
+      ctx.fillStyle = DIM;
+      ctx.fillText(clean
+        ? 'two harmonics at 550.0 Hz — envelope flat'
+        : '550.0 Hz vs ' + (COINCIDENT * Math.pow(2, cents / 1200)).toFixed(1) +
+          ' Hz — carrier slowed for legibility, envelope is the true rate',
+        10, h - 10);
+    }
+
+    let geom = null;
+    function frame(now) {
+      geom = geom || fit(waveEl);
+      if (geom) draw(geom, still ? 0 : (now - t0) / 1000);
+      if (!still) requestAnimationFrame(frame);
+    }
+
+    addEventListener('resize', () => { geom = null; if (still) frame(0); });
+    rangeEl.addEventListener('input', () => { cents = parseFloat(rangeEl.value); label(); if (still) frame(0); });
+    presets.forEach(p => p.addEventListener('click', () => {
+      cents = parseFloat(p.dataset.c);
+      rangeEl.value = cents;
+      label();
+      if (still) frame(0);
+    }));
+
+    label();
+    requestAnimationFrame(frame);
+  }
 })();
 </script>
 </body>
