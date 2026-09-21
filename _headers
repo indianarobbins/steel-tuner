@@ -19,6 +19,11 @@
   # across sites. Turn it off in the dashboard rather than here if unwanted.
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; font-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'
 
+# The share card is immutable in practice and gets fetched by every link
+# unfurler that sees the domain, so let it cache properly.
+/og.png
+  Cache-Control: public, max-age=86400
+
 # Generated from the app's SteelExport target. Never cache past a reload, or
 # the page could outlive a regenerated copy and disagree with the tuner.
 /data.json
