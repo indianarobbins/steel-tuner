@@ -3,12 +3,25 @@
 Landing page for **Steel**, a pedal steel tuner that derives each string's
 target from the chord it is voicing rather than from equal temperament.
 
-Live at <https://indianarobbins.github.io/steel-tuner/>.
+Live at **<https://steeltuner.com>**, served by a Cloudflare Worker
+(`steeltuner`) via Workers Routes on `steeltuner.com/*` and
+`www.steeltuner.com/*`.
 
-Also deployable to Vercel straight from this repo — it is static, so Vercel
-needs no build command and no output directory. Note that Vercel's Hobby plan
-is **non-commercial only**; if the app ships paid, that plan does not cover
-this page and GitHub Pages does.
+Deploy with an explicit name, or wrangler names the worker after the current
+directory and silently deploys somewhere else:
+
+```sh
+wrangler deploy --name steeltuner --assets .
+```
+
+GitHub Pages is no longer the live host — the app is public-facing and the
+site should not advertise a personal account. Note that `_headers` only works
+on Cloudflare; GitHub Pages ignores it and serves no security headers at all,
+which is one reason the Worker is the better host here.
+
+`vercel.json` is kept so the repo still deploys to Vercel unchanged, but note
+Vercel's Hobby plan is **non-commercial only** and would not cover a paid
+app's landing page.
 
 ## What's here
 
