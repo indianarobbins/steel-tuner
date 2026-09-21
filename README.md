@@ -1,6 +1,6 @@
-# Steel — site
+# Steel Tuner — site
 
-Landing page for **Steel**, a pedal steel tuner that derives each string's
+Landing page for **Steel Tuner**, a pedal steel tuner that derives each string's
 target from the chord it is voicing rather than from equal temperament.
 
 Live at **<https://steeltuner.com>**, served by a Cloudflare Worker
